@@ -2,7 +2,6 @@ const ATTACK_VALUE = 10;
 const STRONG_ATTACK_VALUE = 17;
 const MONSTER_ATTACK_VALUE = 21;
 const HEAL_VALUE = 20;
-
 const MODE_ATTACK = "ATTACK"; // MODE_ATTACK = 0
 const MODE_STRONG_ATTACK = "STRONG_ATTACK"; // MODE_STRONG_ATTACK = 1
 const LOG_EVENT_PLAYER_ATTACK = "PLAYER_ATTACK";
@@ -10,20 +9,22 @@ const LOG_EVENT_PLAYER_STRONG_ATTACK = "PLAYER_STRONG_ATTACK";
 const LOG_EVENT_PLAYER_HEAL = "PLAYER_HEAL";
 const LOG_EVENT_PLAYER_GAME_OVER = "GAME_OVER";
 const LOG_EVENT_MONSTER_ATTACK = "MONSTER_ATTACK";
-const enteredValue = prompt("Maximum life for you and the monster.", "100");
 const battleLog = [];
+
+const enteredValue = prompt("Maximum life for you and the monster.", "100");
 let chosenMaxLife = parseInt(enteredValue);
 
+//validate entered max life
 if (isNaN(chosenMaxLife) || chosenMaxLife < 0) {
   chosenMaxLife = 100;
 }
-
+// set up players health
 let currentMonsterHealth = chosenMaxLife;
 let currentPlayerHealth = chosenMaxLife;
+adjustHealthBars(chosenMaxLife);
 let hasBonusLife = true;
 
-adjustHealthBars(chosenMaxLife);
-
+//write game actions to an array of objects
 function writeToLog(ev, val, monsterHealth, playerHealth) {
   let logEntry = {
     event: ev,
@@ -114,12 +115,14 @@ function writeToLog(ev, val, monsterHealth, playerHealth) {
   battleLog.push(logEntry);
 }
 
+//restart the game
 function reset() {
   currentMonsterHealth = chosenMaxLife;
   currentPlayerHealth = chosenMaxLife;
   resetGame(chosenMaxLife);
 }
 
+// calculate round events and monster attack
 function endRound() {
   initialPlayerHealth = currentPlayerHealth;
   const playerDamage = dealPlayerDamage(MONSTER_ATTACK_VALUE);
@@ -170,6 +173,7 @@ function endRound() {
   }
 }
 
+// player attacks monster action
 function attackMonster(mode) {
   let maxDamage = mode === MODE_ATTACK ? ATTACK_VALUE : STRONG_ATTACK_VALUE;
   let logEvent =
@@ -196,7 +200,7 @@ function attackHandler() {
 function strongAttackHandler() {
   attackMonster("STRONG_ATTACK");
 }
-
+// heal player
 function healPlayerHandler() {
   let healValue;
   if (currentPlayerHealth >= chosenMaxLife - HEAL_VALUE) {
